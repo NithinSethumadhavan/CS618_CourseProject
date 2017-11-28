@@ -1,8 +1,0 @@
-<<<<<<< HEAD
-rm *.class
-javac -target 1.7 -cp soot-2.5.0.jar:. RunStronglyLiveVariablesNew.java $1.java
-java -cp soot-2.5.0.jar:.  RunStronglyLiveVariablesNew $1
-=======
-javac -target 1.7 -cp soot-2.5.0.jar:. RunVeryBusyAnalysis.java $1.java
-java -cp soot-2.5.0.jar:.  RunVeryBusyAnalysis $1
->>>>>>> 83c4c734a4d16e6bd8b4c130e35db49b3dd40962
