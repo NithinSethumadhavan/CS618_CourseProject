@@ -9,6 +9,7 @@ public class test
 			System.out.println(a*b - x);
 			x = x - 1;
 		}
-		System.out.println(a*b);
+		c = x - 3;
+		//System.out.println(a*b);
 	}
 }

@@ -156,7 +156,7 @@ class SimpleStronglyLiveVariableAnalysisNew extends BackwardFlowAnalysis
 		// out <- (in - expr containing locals defined in d) union out 
 		kill(inSet, u, outSet);
 		// out <- out union expr used in d
-		gen(outSet, u);
+		gen(outSet, u, inSet);
 	}
 	
 	/**
@@ -190,22 +190,32 @@ class SimpleStronglyLiveVariableAnalysisNew extends BackwardFlowAnalysis
 	 * @param outSet the set flowing out of the unit
 	 * @param u the unit being flown through
 	 */
-	private void gen(FlowSet outSet, Unit u) {
-		Iterator useIt = u.getUseBoxes().iterator();
-		while (useIt.hasNext()) {
-			ValueBox useBox = (ValueBox)useIt.next();
-			if(useBox.getValue() instanceof Local) 
-				outSet.add(useBox.getValue());
-		/*	if (useBox.getValue() instanceof BinopExpr){
-				Iterator eIt = useBox.getValue().getUseBoxes().iterator();
-				
-				while(eIt.hasNext()) {
-					ValueBox  localVar= (ValueBox)eIt.next();
-					if(localVar.getValue() instanceof Local)
-						outSet.add(localVar.getValue());	
-				}
-			}*/
-				//outSet.add(useBox.getValue());
+	private void gen(FlowSet outSet, Unit u,FlowSet inSet) {
+		Iterator defIt = u.getDefBoxes().iterator();
+		if(!defIt.hasNext()){
+			Iterator useIt = u.getUseBoxes().iterator();
+			while(useIt.hasNext()){
+				ValueBox useBox = (ValueBox)useIt.next();
+				if(useBox.getValue() instanceof Local)
+					outSet.add(useBox.getValue());
+			}
 		}
+		else{
+		while(defIt.hasNext()){
+			ValueBox defBox = (ValueBox)defIt.next();
+			Iterator inIt = inSet.iterator();
+			while(inIt.hasNext()){
+				Local v = (Local)inIt.next();
+				if((defBox.getValue() instanceof Local) && defBox.getValue()==v){ 
+					Iterator useIt = u.getUseBoxes().iterator();
+					while (useIt.hasNext()) {
+						ValueBox useBox = (ValueBox)useIt.next();
+						if(useBox.getValue() instanceof Local) 
+							outSet.add(useBox.getValue());
+					}
+				}	
+			}
+		}
+		}	
 	}
 }
